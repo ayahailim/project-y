@@ -60,7 +60,7 @@ class UpdateUserSerializer(serializers.ModelSerializer):
     userprofile = profileSerializer()
     class Meta:
         model = get_user_model()
-        fields = ['id','username', 'email','userprofile']
+        fields = ['username', 'email','userprofile']
         extra_kwargs = {'password': {'write_only': True, 'required': True}}
 
     def update(self, instance, validated_data):

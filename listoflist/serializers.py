@@ -8,12 +8,12 @@ class doctorserializer(serializers.ModelSerializer):
     city = serializers.CharField()
     class Meta:
         model = doctor
-        fields = "__all__"
+        fields = ('dr_name','dr_adress','dr_phone_number' ,'dr_description' ,'city')
 
 class cityserializer(serializers.ModelSerializer):
     id = serializers.IntegerField(read_only=True)
     city_name = serializers.CharField()
-    city = doctorserializer(many=True, read_only=True)
+    doctors= doctorserializer(many=True, read_only=True)
     
     class Meta:
         model = city

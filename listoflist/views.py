@@ -9,14 +9,20 @@ from rest_framework import status
 from rest_framework import generics
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
-#from .permissions import IsAdminOrReadOnly
+from rest_framework.permissions import BasePermission, SAFE_METHODS
 
 
+class IsAdminOrReadOnly(BasePermission):
+    def has_permission(self, request, view):
+        if request.method in SAFE_METHODS:
+            return True
+        else:
+            return request.user.is_staff
 
-class cityListeCreateView(generics.ListCreateAPIView):
+'''class cityListeCreateView(generics.ListCreateAPIView):
     queryset = city.objects.all()
     serializer_class = cityserializer
-    #permission_classes = [IsAdminOrReadOnly]
+    permission_classes = [IsAdminOrReadOnly]
     
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
@@ -24,13 +30,12 @@ class cityListeCreateView(generics.ListCreateAPIView):
         if queryset.exists():
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
-            return Response({'Message': 'No city found'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'Message': 'No city found'}, status=status.HTTP_404_NOT_FOUND)'''
         
-class citydetailView(generics.RetrieveUpdateDestroyAPIView):
+class citydetailView(generics.RetrieveAPIView):
     queryset = city.objects.all()
     serializer_class = cityserializer
-    liikup_field = 'id' # slug
-    #permission_classes = [IsAdminOrReadOnly]
+    permission_classes = [IsAdminOrReadOnly]
     
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
