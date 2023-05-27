@@ -4,7 +4,7 @@ from knox import views as knox_views
 from django.urls import path
 
 urlpatterns = [
-    path('api/signup/', RegisterAPI.as_view(), name='register'),
+    path('api/register/', RegisterAPI.as_view(), name='register'),
     path('api/login/', LoginAPI.as_view(), name='login'),
     path('api/updateprofile/', UpdateUser.as_view(), name='updateprofile'), 
     path('api/ChangePassword/', ChangePasswordView.as_view(), name='ChangePassword'),
