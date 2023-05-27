@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'accounts',
     'listoflist',
     'ml',
+    'feedback',
     'rest_framework',
     'knox',
 

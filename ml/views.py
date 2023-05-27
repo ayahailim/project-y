@@ -74,7 +74,7 @@ class classAPIView(APIView):
                 test_image = np.expand_dims(test_image, axis=0)
                 prediction = temp_model.predict(test_image)
                 max_pred = np.max(prediction)
-                t = 0.95
+                t = 0.90
                 if max_pred < t:
                     prediction_label = "other diseases"
                 else:
