@@ -14,5 +14,5 @@ jobs:
           username: "${{secrets.SSH_USER}}"
           password: "${{secrets.SSH_PASSWORD}}"
           script: |
-            cd /django-apps/project-y
+            cd django-apps/project-y
             git pull origin main
