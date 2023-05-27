@@ -33,7 +33,7 @@ SECRET_KEY = 'django-insecure-vf6!6zsmv9mfnq534_)nj-(l99g@4vz=_*v@m-mxi2bll+%59#
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -103,8 +103,8 @@ DATABASES = {
 
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'skinscanner',
-        'USER': 'skinscanner',
-        'PASSWORD': 'skinscanner',
+        'USER': 'aya',
+        'PASSWORD': 'aya123456',
         'HOST': 'localhost',
         'PORT': '5432',
 
