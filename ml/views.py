@@ -61,7 +61,7 @@ class classAPIView(APIView):
         return Response(serializer.data)
     
     def post(self,request,format=None):
-        classes = ['Basal Cell Carcinoma (BCC)','Melanocytic Nevi (NV)','Melanoma','Monkey Pox','Ringworm','Warts Molluscum,Viral Infections','normal']
+        classes = ['Basal Cell Carcinoma (BCC)','Melanocytic Nevi (NV)','Melanoma','chicken Pox','Ringworm','Warts Molluscum,Viral Infections','normal']
         image_file = request.FILES.get('image')
         user = request.user
         if image_file:
