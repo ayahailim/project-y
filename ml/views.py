@@ -76,7 +76,7 @@ class classAPIView(APIView):
                 max_pred = np.max(prediction)
                 t = 0.90
                 if max_pred < t:
-                    prediction_label = "other diseases"
+                    prediction_label = "unkown"
                 else:
                     prediction_label = classes[np.argmax(prediction)]
                 
