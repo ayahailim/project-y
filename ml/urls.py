@@ -5,5 +5,5 @@ from django.urls import path
 
 urlpatterns = [
     
-    path('api/predict_disease/', classAPIView.as_view(), name='predict the disease'),
+    path('predict/', classAPIView.as_view(), name='predict the disease'),
 ]
