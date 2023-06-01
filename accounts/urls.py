@@ -5,7 +5,7 @@ from django.urls import path
 
 urlpatterns = [
     path('signup/', RegisterAPI.as_view(), name='register'),
-    path('login/', LoginAPI.as_view(), name='login'),
+    path('login/', LoginAPI, name='login'),
     path('updateprofile/', UpdateUser.as_view(), name='updateprofile'), 
     path('ChangePassword/', ChangePasswordView.as_view(), name='ChangePassword'),
     path('logout/', knox_views.LogoutView.as_view(), name='logout'),
