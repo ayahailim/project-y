@@ -43,7 +43,6 @@ class RegisterAPI(CreateAPIView):
         return Response(response, status=status_code)
 #---------------------------------------------------------------------------------------------------
 # login page
-@csrf_exempt
 class LoginAPI(KnoxLoginView):
     permission_classes = (permissions.AllowAny,)
     def post(self, request, format=None):
