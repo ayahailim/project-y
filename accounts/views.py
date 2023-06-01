@@ -19,7 +19,7 @@ from rest_framework.response import Response
 from .serializers import UpdateUserSerializer
 from rest_framework.authentication import BasicAuthentication
 from knox.auth import TokenAuthentication
-
+from rest_framework.decorators.csrf import csrf_exempt
 from rest_framework.decorators import api_view
 User = get_user_model()
 
@@ -43,7 +43,7 @@ class RegisterAPI(CreateAPIView):
         return Response(response, status=status_code)
 #---------------------------------------------------------------------------------------------------
 # login page
-
+@csrf_exempt
 class LoginAPI(KnoxLoginView):
     permission_classes = (permissions.AllowAny,)
     def post(self, request, format=None):
