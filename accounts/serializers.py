@@ -5,7 +5,6 @@ from rest_framework import serializers
 from accounts.models import UserProfile
 from rest_framework import serializers
 from django.contrib.auth.models import User
-
 User = get_user_model()
 
 class Base64ImageField(serializers.ImageField):

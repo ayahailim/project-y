@@ -45,7 +45,10 @@ from knox.views import LoginView as KnoxLoginView
 class LoginAPI(KnoxLoginView):
     permission_classes = (permissions.AllowAny,)
     serializer_class = CustomAuthTokenSerializer
-
+    
+    def get_serializer(self, *args, **kwargs):
+        return self.serializer_class(*args, **kwargs)
+    
     def post(self, request, format=None):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
