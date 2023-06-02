@@ -41,30 +41,16 @@ class RegisterAPI(CreateAPIView):
         status_code = status.HTTP_200_OK
         return Response(response, status=status_code)
 #---------------------------------------------------------------------------------------------------
-from knox.views import LoginView as KnoxLoginView
-class LoginAPI(KnoxLoginView):
-    permission_classes = (permissions.AllowAny,)
-    serializer_class = CustomAuthTokenSerializer
-    
-    def get_serializer(self, *args, **kwargs):
-        return self.serializer_class(*args, **kwargs)
-    
-    def post(self, request, format=None):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data['user']
-        login(request, user)
-        return super(LoginAPI, self).post(request, format=None)
-    
+
 # login page
-'''class LoginAPI(KnoxLoginView):
+class LoginAPI(KnoxLoginView):
     permission_classes = (permissions.AllowAny,)
     def post(self, request, format=None):
         serializer = AuthTokenSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
         login(request, user)
-        return super(LoginAPI, self).post(request, format=None)'''
+        return super(LoginAPI, self).post(request, format=None)
 #---------------------------------------------------------------------------------------------------
 #update profile and user togther
 
