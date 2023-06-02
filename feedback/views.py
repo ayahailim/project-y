@@ -11,7 +11,7 @@ class FeedbackListCreateAPIView(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def perform_create(self, serializer):
-        serializer.save(user=self.request.user, stars=self.request.data.get('stars', 1))
+        serializer.save(user=self.request.user, stars=self.request.data.get('stars', 1.0))
         
 
 '''class FeedbackListRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):

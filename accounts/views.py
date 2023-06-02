@@ -17,7 +17,7 @@ from rest_framework import status
 from rest_framework import generics
 from rest_framework.response import Response
 from .serializers import UpdateUserSerializer
-from rest_framework.authentication import BasicAuthentication
+#from rest_framework.authentication import BasicAuthentication
 from knox.auth import TokenAuthentication
 from rest_framework.decorators import api_view
 User = get_user_model()
