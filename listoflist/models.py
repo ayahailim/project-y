@@ -16,7 +16,6 @@ class doctor(models.Model):
     dr_phone_number = models.CharField(max_length=11)
     city = models.ForeignKey(city, related_name= 'doctors', on_delete=models.SET_NULL, null=True)
     
-
     def __str__(self):
         return self.dr_name
 
