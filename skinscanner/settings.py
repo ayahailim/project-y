@@ -165,4 +165,4 @@ REST_FRAMEWORK = {
 
 }
 
-CSRF_TRUSTED_ORIGINS = ['172-105-248-224.ip.linodeusercontent.com']
+CSRF_TRUSTED_ORIGINS = ['https://172-105-248-224.ip.linodeusercontent.com']
