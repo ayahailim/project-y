@@ -18,11 +18,15 @@ from rest_framework import generics
 from rest_framework.response import Response
 from .serializers import UpdateUserSerializer
 from rest_framework.exceptions import AuthenticationFailed
-#from rest_framework.authentication import BasicAuthentication
 from knox.auth import TokenAuthentication
 from rest_framework.decorators import api_view
 User = get_user_model()
-
+from rest_framework.authtoken.serializers import AuthTokenSerializer
+from django.utils.translation import gettext as _
+from rest_framework import serializers
+from django.contrib.auth import authenticate
+from knox.views import LoginView as KnoxLoginView
+from rest_framework.response import Response
 #---------------------------------------------------------------------------------------------------
 #sign_up page
 
@@ -42,10 +46,7 @@ class RegisterAPI(CreateAPIView):
         status_code = status.HTTP_200_OK
         return Response(response, status=status_code)
 #---------------------------------------------------------------------------------------------------
-from rest_framework.authtoken.serializers import AuthTokenSerializer
-from django.utils.translation import gettext as _
-from rest_framework import serializers
-from django.contrib.auth import authenticate
+# login page
 
 class CustomAuthTokenSerializer(AuthTokenSerializer):
     def validate(self, attrs):
@@ -70,8 +71,6 @@ class CustomAuthTokenSerializer(AuthTokenSerializer):
             msg = _('Must include "username" and "password".')
             raise serializers.ValidationError(msg, code='authorization')
         
-from knox.views import LoginView as KnoxLoginView
-from rest_framework.response import Response
 
 class LoginAPI(KnoxLoginView):
     permission_classes = (permissions.AllowAny,)
@@ -86,17 +85,6 @@ class LoginAPI(KnoxLoginView):
             return Response({'message': 'successfully logged in', 'token': token})
         else:
             return Response(serializer.errors, status=400)
-# login page
-'''class LoginAPI(KnoxLoginView):
-    permission_classes = (permissions.AllowAny,)
-
-    def post(self, request, format=None):
-        serializer = AuthTokenSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data['user']
-        login(request, user)
-        token = AuthToken.objects.create(user)[1]
-        return Response({'message': 'successfully logged in', 'token': token})'''
 #---------------------------------------------------------------------------------------------------
 #update profile and user togther
 
@@ -172,146 +160,3 @@ class ChangePasswordView(generics.UpdateAPIView):
 
 
 
-
-
-
-'''class UserAPIView(RetrieveAPIView):
-    serializer_class = UserSerializer
-    queryset = User.objects.all()
-    authentication_classes=[BasicAuthentication]
-    permission_classes = (IsAuthenticated,)
-    def get(self, request):
-        try:
-            user_profile = UserProfile.objects.get(user=request.user)
-            status_code = status.HTTP_200_OK
-            response = {
-                'data': [{
-                    'username': user_profile.user.username,
-                    'email': user_profile.user.email,
-                    'password': user_profile.user.password,
-                    'first_name': user_profile.first_name,
-                    'last_name': user_profile.last_name,
-                    'profile_pic': user_profile.profile_pic.url,
-                    'mobile': user_profile.mobile,
-            
-                    }]
-                }
-        except Exception as e:
-            status_code = status.HTTP_400_BAD_REQUEST
-            response = {
-                'success': 'false',
-                'status code': status.HTTP_400_BAD_REQUEST,
-                'message': 'User does not exists',
-                'error': str(e)
-                }
-        return Response(response, status=status_code)
-    def get_object(self):
-        return self.request.user '''   
-#---------------------------------------------------------------------------------------------------
-'''class MultipleFieldLookupMixin:
-   
-    def get_object(self):
-        queryset = self.get_queryset()             # Get the base queryset
-        queryset = self.filter_queryset(queryset)  # Apply any filter backends
-        filter = {}
-        for field in self.lookup_fields:
-            if self.kwargs.get(field): # Ignore empty fields.
-                filter[field] = self.kwargs[field]
-        obj = get_object_or_404(queryset, **filter)  # Lookup the object
-        self.check_object_permissions(self.request, obj)
-        return obj   
-class UserRetrieveUpdateAPIView(MultipleFieldLookupMixin,generics.RetrieveUpdateAPIView):
-    permission_classes = (IsAuthenticated,)
-    serializer_class = UserSerializer
-
-    def retrieve(self, request, *args, **kwargs):
-        serializer = self.serializer_class(request.user)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-    
-    def update(self, request, *args, **kwargs):
-        serializer = self.serializer_class(request.user, data=request.data, partial=True)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_200_OK)'''
-#---------------------------------------------------------------------------------------------------
-# Register API
-'''class RegisterAPI(generics.GenericAPIView):
-    serializer_class = RegisterSerializer
-
-    def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = serializer.save()
-        return Response({
-        "user": UserSerializer(user, context=self.get_serializer_context()).data,
-        "token": AuthToken.objects.create(user)[1]
-        })'''
-#---------------------------------------------------------------------------------------------------
-'''class IsAuthenticatedOrWriteOnly(BasePermission):
-    def has_permission(self, request, view):
-        WRITE_METHODS = ["POST", ]
-
-        return (
-            request.method in WRITE_METHODS or
-            request.user and
-            request.user.is_authenticated
-        )
-class UserList(generics.ListCreateAPIView):
-    permission_classes = (IsAuthenticatedOrWriteOnly,)
-    serializer_class = UserSerializer
-    queryset = User.objects.all()
-
-    def post(self, request, format=None):
-        serializer = UserSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    '''
-#---------------------------------------------------------------------------------------------------
-#profile page
-'''
-class UserProfileView(generics.RetrieveAPIView):
-    permission_classes = (IsAuthenticated,)
-    def get(self, request):
-        try:
-            user_profile = UserProfile.objects.get(user=request.user)
-            status_code = status.HTTP_200_OK
-            response = {
-                'success': 'true',
-                'status code': status_code,
-                'message': 'User profile fetched successfully',
-                'data': [{
-                    'first_name': user_profile.first_name,
-                    'last_name': user_profile.last_name,
-                    'profile_pic': user_profile.profile_pic.url,
-                    'mobile': user_profile.mobile,
-            
-                    }]
-                }
-        except Exception as e:
-            status_code = status.HTTP_400_BAD_REQUEST
-            response = {
-                'success': 'false',
-                'status code': status.HTTP_400_BAD_REQUEST,
-                'message': 'User does not exists',
-                'error': str(e)
-                }
-        return Response(response, status=status_code)'''
-#---------------------------------------------------------------------------------------------------
-'''class updateuserView(RetrieveUpdateAPIView):
-    serializer_class = UserSerializer
-    queryset = User.objects.all()
-    #permission_classes = (IsAuthenticated,)
-
-    def get_object(self):
-        return self.request.user '''
-#--------------------------------------------------------------------------------------------
-'''class updateprofileView(RetrieveUpdateAPIView):
-    serializer_class = profileSerializer
-    queryset = User.objects.all()
-    permission_classes = (IsAuthenticated,)
-
-    def get_object(self):
-        return self.request.user '''
-#---------------------------------------------------------------------------------------------------
