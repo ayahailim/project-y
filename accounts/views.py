@@ -42,19 +42,50 @@ class RegisterAPI(CreateAPIView):
         status_code = status.HTTP_200_OK
         return Response(response, status=status_code)
 #---------------------------------------------------------------------------------------------------
+from rest_framework.authtoken.serializers import AuthTokenSerializer
+from django.utils.translation import ugettext as _
+from rest_framework import serializers
+from django.contrib.auth import authenticate
+
+class CustomAuthTokenSerializer(AuthTokenSerializer):
+    def validate(self, attrs):
+        username = attrs.get('username')
+        password = attrs.get('password')
+
+        if username and password:
+            user = authenticate(request=self.context.get('request'),
+                                username=username, password=password)
+
+            if not user:
+                msg = _('Username or password is incorrect')
+                raise serializers.ValidationError(msg, code='authorization')
+
+            if not user.is_active:
+                msg = _('User account is disabled.')
+                raise serializers.ValidationError(msg, code='authorization')
+
+            attrs['user'] = user
+            return attrs
+        else:
+            msg = _('Must include "username" and "password".')
+            raise serializers.ValidationError(msg, code='authorization')
+        
+from knox.views import LoginView as KnoxLoginView
+from rest_framework.response import Response
+
 class LoginAPI(KnoxLoginView):
     permission_classes = (permissions.AllowAny,)
+    serializer_class = CustomAuthTokenSerializer
 
     def post(self, request, format=None):
-        serializer = AuthTokenSerializer(data=request.data)
-        try:
-            serializer.is_valid(raise_exception=True)
-        except AuthenticationFailed as e:
-            return Response({'message': 'username or password is incorrect'}, status=400)
-        user = serializer.validated_data['user']
-        login(request, user)
-        token = AuthToken.objects.create(user)[1]
-        return Response({'message': 'successfully logged in', 'token': token})
+        serializer = self.serializer_class(data=request.data, context={'request': request})
+        if serializer.is_valid():
+            user = serializer.validated_data['user']
+            login(request, user)
+            token = AuthToken.objects.create(user)[1]
+            return Response({'message': 'successfully logged in', 'token': token})
+        else:
+            return Response(serializer.errors, status=400)
 # login page
 '''class LoginAPI(KnoxLoginView):
     permission_classes = (permissions.AllowAny,)
