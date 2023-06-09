@@ -43,7 +43,7 @@ class RegisterAPI(CreateAPIView):
         return Response(response, status=status_code)
 #---------------------------------------------------------------------------------------------------
 from rest_framework.authtoken.serializers import AuthTokenSerializer
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from rest_framework import serializers
 from django.contrib.auth import authenticate
 
