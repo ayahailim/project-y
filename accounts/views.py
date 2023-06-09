@@ -17,6 +17,7 @@ from rest_framework import status
 from rest_framework import generics
 from rest_framework.response import Response
 from .serializers import UpdateUserSerializer
+from rest_framework.exceptions import AuthenticationFailed
 #from rest_framework.authentication import BasicAuthentication
 from knox.auth import TokenAuthentication
 from rest_framework.decorators import api_view
@@ -46,7 +47,10 @@ class LoginAPI(KnoxLoginView):
 
     def post(self, request, format=None):
         serializer = AuthTokenSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+        try:
+            serializer.is_valid(raise_exception=True)
+        except AuthenticationFailed as e:
+            return Response({'message': 'username or password is incorrect'}, status=400)
         user = serializer.validated_data['user']
         login(request, user)
         token = AuthToken.objects.create(user)[1]
@@ -54,12 +58,14 @@ class LoginAPI(KnoxLoginView):
 # login page
 '''class LoginAPI(KnoxLoginView):
     permission_classes = (permissions.AllowAny,)
+
     def post(self, request, format=None):
         serializer = AuthTokenSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
         login(request, user)
-        return super(LoginAPI, self).post(request, format=None)'''
+        token = AuthToken.objects.create(user)[1]
+        return Response({'message': 'successfully logged in', 'token': token})'''
 #---------------------------------------------------------------------------------------------------
 #update profile and user togther
 
