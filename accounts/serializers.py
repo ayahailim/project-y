@@ -48,8 +48,7 @@ class Base64ImageField(serializers.ImageField):
 #---------------------------------------------------------------------------------------------------------------
 class profileSerializer(serializers.ModelSerializer):
     profile_pic = Base64ImageField(max_length=None, use_url=True, )
-    #profile_pic = serializers.ImageField(required=False)
-
+    
     class Meta:
         model = UserProfile
         fields = ('profile_pic','mobile')
@@ -81,6 +80,17 @@ class RegisterSerializer(serializers.ModelSerializer):
             extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
+        profile_data = validated_data.pop('profile', {})
+        user = User.objects.create_user(**validated_data)
+        profile_pic = profile_data.get('profile_pic', 'default_profile_pic.jpg')
+        mobile = profile_data.get('mobile')
+        UserProfile.objects.create(
+            user=user,
+            profile_pic=profile_pic,
+            mobile=mobile,
+        )
+        return user
+    '''def create(self, validated_data):
         profile_data = validated_data.pop('profile')
         user = User.objects.create_user(**validated_data)
         UserProfile.objects.create(
@@ -89,7 +99,7 @@ class RegisterSerializer(serializers.ModelSerializer):
                 mobile=profile_data['mobile'],
                 
             )
-        return user
+        return user'''
 #---------------------------------------------------------------------------------------------------------------
 #change password
 class ChangePasswordSerializer(serializers.Serializer):
