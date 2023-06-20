@@ -166,3 +166,8 @@ REST_FRAMEWORK = {
 }
 
 CSRF_TRUSTED_ORIGINS = ['https://172-105-248-224.ip.linodeusercontent.com']
+
+SESSION_COOKIE_AGE = 86400 
+
+# Ensure session does not expire when browser is closed
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
