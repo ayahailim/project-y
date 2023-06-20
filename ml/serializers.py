@@ -9,12 +9,12 @@ from rest_framework import serializers
 import pytz
 from rest_framework import serializers
 from django.utils import timezone
-
+#:%S %Z
 class EgyptDateTimeField(serializers.DateTimeField):
     def to_representation(self, value):
         timezone_obj = pytz.timezone('Africa/Cairo')
         date_with_clock = timezone.localtime(value, timezone_obj)
-        return date_with_clock.strftime('%Y-%m-%d %H:%M:%S %Z')
+        return date_with_clock.strftime('%Y-%m-%d %H:%M')
 
 class preuserSerializer(serializers.ModelSerializer):
     date = EgyptDateTimeField()
