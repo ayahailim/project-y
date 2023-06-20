@@ -10,6 +10,7 @@ from rest_framework import generics
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 from rest_framework.permissions import BasePermission, SAFE_METHODS
+from rest_framework.authentication import SessionAuthentication
 
 
 class IsAdminOrReadOnly(BasePermission):

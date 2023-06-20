@@ -4,10 +4,12 @@ from django.shortcuts import render
 from rest_framework import generics, permissions
 from .models import Feedback
 from .serializers import FeedbackSerializer
+from rest_framework.authentication import SessionAuthentication
 
 class FeedbackListCreateAPIView(generics.ListCreateAPIView):
     queryset = Feedback.objects.all()
     serializer_class = FeedbackSerializer
+    authentication_classes = [SessionAuthentication]
     permission_classes = [permissions.IsAuthenticated]
 
     def perform_create(self, serializer):
