@@ -9,7 +9,7 @@ from rest_framework.authentication import SessionAuthentication
 class FeedbackListCreateAPIView(generics.ListCreateAPIView):
     queryset = Feedback.objects.all()
     serializer_class = FeedbackSerializer
-    authentication_classes = [SessionAuthentication]
+    #authentication_classes = [SessionAuthentication]
     permission_classes = [permissions.IsAuthenticated]
 
     def perform_create(self, serializer):
