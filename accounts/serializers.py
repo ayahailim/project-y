@@ -1,3 +1,4 @@
+from django.forms import ValidationError
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model
@@ -6,6 +7,8 @@ from accounts.models import UserProfile
 from rest_framework import serializers
 from django.contrib.auth.models import User
 User = get_user_model()
+from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
 
 from django.core.files.base import ContentFile
 import base64
@@ -94,7 +97,17 @@ class UpdateUserSerializer(serializers.ModelSerializer):
         model = get_user_model()
         fields = ['username', 'email', 'userprofile']
         extra_kwargs = {'password': {'write_only': True, 'required': True}}
-
+    
+    def validate_email(self, value):
+        """
+        Validate that the email address is valid.
+        """
+        try:
+            validate_email(value)
+        except ValidationError:
+            raise serializers.ValidationError('Invalid email address.')
+        return value
+    
     def update(self, instance, validated_data):
         userprofile_data = validated_data.pop('userprofile', {})
         instance.username = validated_data.get('username', instance.username)
@@ -106,6 +119,26 @@ class UpdateUserSerializer(serializers.ModelSerializer):
         instance.save()
 
         return instance
+    
+'''class UpdateUserSerializer(serializers.ModelSerializer):
+    userprofile = profileSerializer()
+
+    class Meta:
+        model = get_user_model()
+        fields = ['username', 'email', 'userprofile']
+        extra_kwargs = {'password': {'write_only': True, 'required': True}}
+
+    def update(self, instance, validated_data):
+        userprofile_data = validated_data.pop('userprofile', {})
+        instance.username = validated_data.get('username', instance.username)
+        instance.email = validated_data.get('email', instance.email)
+
+        # Update only the fields of the user profile instance that are present in the request data
+        instance.userprofile.__dict__.update((key, value) for key, value in userprofile_data.items() if value is not None)
+        instance.userprofile.save()
+        instance.save()
+
+        return instance'''
 '''class UpdateUserSerializer(serializers.ModelSerializer):
     userprofile = profileSerializer()
     class Meta:
