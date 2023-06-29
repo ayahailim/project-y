@@ -97,7 +97,7 @@ class UpdateUserSerializer(serializers.ModelSerializer):
         model = get_user_model()
         fields = ['username', 'email', 'userprofile']
         extra_kwargs = {'password': {'write_only': True, 'required': True}}
-    
+
     def validate_email(self, value):
         """
         Validate that the email address is valid.
@@ -111,7 +111,7 @@ class UpdateUserSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         userprofile_data = validated_data.pop('userprofile', {})
         
-        # Update the fields of the user instance that are present in the request data
+        # Update only the fields of the user instance that are present in the request data
         for key, value in validated_data.items():
             setattr(instance, key, value)
         
