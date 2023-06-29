@@ -96,7 +96,9 @@ class UpdateUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
         fields = ['username', 'email', 'userprofile']
-        extra_kwargs = {'password': {'write_only': True, 'required': True}}
+        extra_kwargs = {'password': {'write_only': True, 'required': True},
+                        'username': {'required': False},
+                        'email': {'required': False}}
 
     def validate_email(self, value):
         """
@@ -108,22 +110,23 @@ class UpdateUserSerializer(serializers.ModelSerializer):
             except ValidationError:
                 raise serializers.ValidationError('Invalid email address.')
         return value
-    
+
     def update(self, instance, validated_data):
         userprofile_data = validated_data.pop('userprofile', {})
         
         # Update the username field if it is included in the request data
-        username = validated_data.pop('username', None)
+        username = validated_data.get('username', None)
         if username is not None:
             instance.username = username
         
         # Update the email field if it is included in the request data and not empty
-        email = validated_data.pop('email', None)
+        email = validated_data.get('email', None)
         if email:
             instance.email = email
         
         # Update only the fields of the user profile instance that are present in the request data
-        instance.userprofile.__dict__.update((key, value) for key, value in userprofile_data.items() if value is not None)
+        for key, value in userprofile_data.items():
+            setattr(instance.userprofile, key, value)
         instance.userprofile.save()
         instance.save()
 
