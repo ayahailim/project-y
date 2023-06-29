@@ -125,8 +125,7 @@ class UpdateUserSerializer(serializers.ModelSerializer):
             instance.email = email
         
         # Update only the fields of the user profile instance that are present in the request data
-        for key, value in userprofile_data.items():
-            setattr(instance.userprofile, key, value)
+        instance.userprofile.__dict__.update((key, value) for key, value in userprofile_data.items() if value is not None)
         instance.userprofile.save()
         instance.save()
 
