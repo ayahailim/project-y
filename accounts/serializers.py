@@ -96,11 +96,7 @@ class UpdateUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
         fields = ['username', 'email', 'userprofile']
-        extra_kwargs = {
-            'password': {'write_only': True, 'required': True},
-            'username': {'required': False},
-            'email': {'required': False},
-        }
+        extra_kwargs = {'password': {'write_only': True, 'required': True}}
 
     def validate_email(self, value):
         """
@@ -121,9 +117,9 @@ class UpdateUserSerializer(serializers.ModelSerializer):
         if username is not None:
             instance.username = username
         
-        # Update the email field if it is included in the request data
+        # Update the email field if it is included in the request data and not empty
         email = validated_data.pop('email', None)
-        if email is not None:
+        if email:
             instance.email = email
         
         # Update only the fields of the user profile instance that are present in the request data
