@@ -84,6 +84,7 @@ class profileSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
         fields = ('profile_pic','mobile')
+        extra_kwargs = {'mobile': {'required': False}}
 #---------------------------------------------------------------------------------------------------------------
 #update profile and user
 class UpdateUserSerializer(serializers.ModelSerializer):
@@ -92,7 +93,7 @@ class UpdateUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
         fields = ['username', 'email', 'userprofile']
-        extra_kwargs = {'password': {'write_only': True, 'required': True},'mobile': {'required': False}}
+        extra_kwargs = {'password': {'write_only': True, 'required': True}}
 
     def update(self, instance, validated_data):
         userprofile_data = validated_data.pop('userprofile', {})
