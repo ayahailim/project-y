@@ -88,6 +88,24 @@ class profileSerializer(serializers.ModelSerializer):
 #update profile and user
 class UpdateUserSerializer(serializers.ModelSerializer):
     userprofile = profileSerializer()
+
+    class Meta:
+        model = get_user_model()
+        fields = ['username', 'userprofile']
+        extra_kwargs = {'password': {'write_only': True, 'required': True}}
+
+    def update(self, instance, validated_data):
+        userprofile_data = validated_data.pop('userprofile', {})
+        instance.username = validated_data.get('username', instance.username)
+
+        # Update only the fields of the user profile instance that are present in the request data
+        instance.userprofile.__dict__.update((key, value) for key, value in userprofile_data.items() if value is not None)
+        instance.userprofile.save()
+        instance.save()
+
+        return instance
+'''class UpdateUserSerializer(serializers.ModelSerializer):
+    userprofile = profileSerializer()
     class Meta:
         model = get_user_model()
         fields = ['username', 'email','userprofile']
@@ -100,7 +118,7 @@ class UpdateUserSerializer(serializers.ModelSerializer):
             instance.userprofile.mobile = userprofile_data['mobile']
             # And save profile
             instance.userprofile.save()
-        return super().update(instance, validated_data)
+        return super().update(instance, validated_data)'''
 #---------------------------------------------------------------------------------------------------------------
 #sign up
 class RegisterSerializer(serializers.ModelSerializer):

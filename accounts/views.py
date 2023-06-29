@@ -101,7 +101,6 @@ class UpdateUser(generics.RetrieveUpdateAPIView):
         self.check_object_permissions(self.request, obj)
         return obj
     
-    #authentication_classes = [SessionAuthentication]
     authentication_classes=[TokenAuthentication]
     permission_classes = (IsAuthenticated,)
     
@@ -112,7 +111,6 @@ class ChangePasswordView(generics.UpdateAPIView):
     serializer_class = ChangePasswordSerializer
     model = User
     authentication_classes=[TokenAuthentication]
-    #authentication_classes = [SessionAuthentication]
     permission_classes = (IsAuthenticated,)
 
     def get_object(self, queryset=None):
