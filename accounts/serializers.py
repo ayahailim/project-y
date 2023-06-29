@@ -96,7 +96,7 @@ class UpdateUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
         fields = ['username', 'email', 'userprofile']
-        extra_kwargs = {'password': {'write_only': True, 'required': True},'email': {'required': False}}
+        extra_kwargs = {'password': {'write_only': True, 'required': True}}
     
     def validate_email(self, value):
         """
@@ -110,16 +110,17 @@ class UpdateUserSerializer(serializers.ModelSerializer):
     
     def update(self, instance, validated_data):
         userprofile_data = validated_data.pop('userprofile', {})
-        instance.username = validated_data.get('username', instance.username)
-        instance.email = validated_data.get('email', instance.email)
-
+        
+        # Update the fields of the user instance that are present in the request data
+        for key, value in validated_data.items():
+            setattr(instance, key, value)
+        
         # Update only the fields of the user profile instance that are present in the request data
         instance.userprofile.__dict__.update((key, value) for key, value in userprofile_data.items() if value is not None)
         instance.userprofile.save()
         instance.save()
 
         return instance
-    
 '''class UpdateUserSerializer(serializers.ModelSerializer):
     userprofile = profileSerializer()
 
