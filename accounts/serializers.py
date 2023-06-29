@@ -91,12 +91,13 @@ class UpdateUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = get_user_model()
-        fields = ['username', 'userprofile']
+        fields = ['username', 'email', 'userprofile']
         extra_kwargs = {'password': {'write_only': True, 'required': True}}
 
     def update(self, instance, validated_data):
         userprofile_data = validated_data.pop('userprofile', {})
         instance.username = validated_data.get('username', instance.username)
+        instance.email = validated_data.get('email', instance.email)
 
         # Update only the fields of the user profile instance that are present in the request data
         instance.userprofile.__dict__.update((key, value) for key, value in userprofile_data.items() if value is not None)
