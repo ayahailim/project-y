@@ -165,8 +165,9 @@ class UpdateUserSerializer(serializers.ModelSerializer):
             instance.userprofile.save()
         return super().update(instance, validated_data)'''
 #---------------------------------------------------------------------------------------------------------------
-#sign up
-class RegisterSerializer(serializers.ModelSerializer):
+#sign up 
+#right
+'''class RegisterSerializer(serializers.ModelSerializer):
     profile = profileSerializer(required=False)
 
     class Meta:
@@ -179,6 +180,30 @@ class RegisterSerializer(serializers.ModelSerializer):
         user = User.objects.create_user(**validated_data)
         if 'profile_pic' in profile_data and profile_data['profile_pic'] != '':
             profile_pic = profile_data['profile_pic']
+        else:
+            profile_pic = 'default_profile_pic.jpg'
+        mobile = profile_data.get('mobile')
+        UserProfile.objects.create(
+            user=user,
+            profile_pic=profile_pic,
+            mobile=mobile,
+        )
+        return user'''
+
+class RegisterSerializer(serializers.ModelSerializer):
+    profile = profileSerializer(required=False)
+
+    class Meta:
+        model = User
+        fields = ('username','email', 'password', 'profile')
+        extra_kwargs = {'password': {'write_only': True}}
+
+    def create(self, validated_data):
+        profile_data = validated_data.pop('profile', {})
+        user = User.objects.create_user(**validated_data)
+        profile_pic = profile_data.get('profile_pic')
+        if profile_pic is not None and profile_pic != '':
+            pass
         else:
             profile_pic = 'default_profile_pic.jpg'
         mobile = profile_data.get('mobile')
