@@ -12,7 +12,7 @@ class city(models.Model):
 
 class doctor(models.Model):
     dr_name = models.CharField(max_length=20)
-    dr_adress = models.CharField(max_length=20)
+    dr_adress = models.URLField()
     dr_phone_number = models.CharField(max_length=11)
     city = models.ForeignKey(city, related_name= 'doctors', on_delete=models.SET_NULL, null=True)
     
