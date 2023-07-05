@@ -205,7 +205,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         if profile_pic is not None and profile_pic != '':
             pass
         else:
-            profile_pic = 'default_profile_pic.jpg'
+            profile_pic = 'default_photo.jpg'
         mobile = profile_data.get('mobile')
         UserProfile.objects.create(
             user=user,
