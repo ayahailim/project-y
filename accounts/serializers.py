@@ -106,7 +106,7 @@ class RegisterSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         profile_data = validated_data.pop('profile', {})
         user = User.objects.create_user(**validated_data)
-        profile_pic = profile_data.get('profile_pic', 'default_photo.jpg')
+        profile_pic = profile_data.get('profile_pic', 'default_profile_pic.jpg')
         mobile = profile_data.get('mobile')
         UserProfile.objects.create(
             user=user,
