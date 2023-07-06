@@ -83,7 +83,7 @@ class Base64ImageField(serializers.ImageField):
 #---------------------------------------------------------------------------------------------------------------
 class profileSerializer(serializers.ModelSerializer):
     profile_pic = Base64ImageField(max_length=None, use_url=True, )
-    
+    profile_pic = serializers.ImageField(required=False, allow_empty_file=True)
     class Meta:
         model = UserProfile
         fields = ('profile_pic','mobile')
