@@ -18,6 +18,18 @@ class IsAdminOrReadOnly(BasePermission):
             return True
         else:
             return request.user.is_staff
+        
+from django.http import HttpResponse
+from .models import doctor
+
+def my_view(request):
+    # get the Arabic text from your model
+    arabic_text = doctor.objects.get(id=1).dr_adress
+    
+    # create an HTTP response with the Arabic text encoded as UTF-8
+    response = HttpResponse(arabic_text, content_type='text/plain; charset=utf-8')
+    
+    return response
 
 class citydetailView(generics.RetrieveAPIView):
     queryset = city.objects.all()
@@ -31,3 +43,4 @@ class citydetailView(generics.RetrieveAPIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response({'Message': 'No city Found'}, status=status.HTTP_404_NOT_FOUND)
+        
