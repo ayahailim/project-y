@@ -12,7 +12,6 @@ from rest_framework import serializers
 from rest_framework.permissions import BasePermission, SAFE_METHODS
 from rest_framework.authentication import SessionAuthentication
 
-
 class IsAdminOrReadOnly(BasePermission):
     def has_permission(self, request, view):
         if request.method in SAFE_METHODS:
