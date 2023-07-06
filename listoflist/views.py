@@ -20,19 +20,6 @@ class IsAdminOrReadOnly(BasePermission):
         else:
             return request.user.is_staff
 
-'''class cityListeCreateView(generics.ListCreateAPIView):
-    queryset = city.objects.all()
-    serializer_class = cityserializer
-    permission_classes = [IsAdminOrReadOnly]
-    
-    def list(self, request, *args, **kwargs):
-        queryset = self.get_queryset()
-        serializer = cityserializer(queryset, many=True, context={'request': request})
-        if queryset.exists():
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        else:
-            return Response({'Message': 'No city found'}, status=status.HTTP_404_NOT_FOUND)'''
-        
 class citydetailView(generics.RetrieveAPIView):
     queryset = city.objects.all()
     serializer_class = cityserializer
