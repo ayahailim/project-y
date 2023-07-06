@@ -7,7 +7,7 @@ from .models import Task
 from .serializers import TaskSerializer
 from django.db.models import Q
 
-class TaskList(generics.ListCreateAPIView):
+'''class TaskList(generics.ListCreateAPIView):
     serializer_class = TaskSerializer
     authentication_classes = [TokenAuthentication]
     permission_classes = (IsAuthenticated,)
@@ -31,9 +31,9 @@ class TaskDetail(generics.RetrieveUpdateDestroyAPIView):
             queryset = queryset.filter(Q(name__icontains=search_query) | Q(description__icontains=search_query))
         obj = generics.get_object_or_404(queryset, pk=self.kwargs["pk"])
         self.check_object_permissions(self.request, obj)
-        return obj
+        return obj'''
 
-'''class TaskList(generics.ListCreateAPIView):
+class TaskList(generics.ListCreateAPIView):
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
     authentication_classes=[TokenAuthentication]
@@ -43,4 +43,4 @@ class TaskDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
     authentication_classes=[TokenAuthentication]
-    permission_classes = (IsAuthenticated,)'''
+    permission_classes = (IsAuthenticated,)
