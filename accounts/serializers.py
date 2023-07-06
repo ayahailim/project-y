@@ -190,7 +190,7 @@ class UpdateUserSerializer(serializers.ModelSerializer):
         )
         return user'''
 
-class RegisterSerializer(serializers.ModelSerializer):
+'''rclass RegisterSerializer(serializers.ModelSerializer):
     profile = profileSerializer(required=False)
 
     class Meta:
@@ -212,17 +212,26 @@ class RegisterSerializer(serializers.ModelSerializer):
             profile_pic=profile_pic,
             mobile=mobile,
         )
-        return user
-    '''def create(self, validated_data):
-        profile_data = validated_data.pop('profile')
-        user = User.objects.create_user(**validated_data)
-        UserProfile.objects.create(
-                user=user,
-                profile_pic=profile_data['profile_pic'],
-                mobile=profile_data['mobile'],
-                
-            )
         return user'''
+class RegisterSerializer(serializers.ModelSerializer):
+    profile = profileSerializer(required=False)
+
+    class Meta:
+        model = User
+        fields = ('username','email', 'password', 'profile')
+        extra_kwargs = {'password': {'write_only': True}}
+
+    def create(self, validated_data):
+        profile_data = validated_data.pop('profile', {})
+        user = User.objects.create_user(**validated_data)
+        profile_pic = profile_data.get('profile_pic', 'default_photo.jpg')
+        mobile = profile_data.get('mobile')
+        UserProfile.objects.create(
+            user=user,
+            profile_pic=profile_pic,
+            mobile=mobile,
+        )
+        return user   
 #---------------------------------------------------------------------------------------------------------------
 #change password
 class ChangePasswordSerializer(serializers.Serializer):
@@ -231,45 +240,6 @@ class ChangePasswordSerializer(serializers.Serializer):
     old_password = serializers.CharField(required=True)
     new_password = serializers.CharField(required=True)
 #-----------------------------------------------------------------------------------------
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 '''class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -286,7 +256,6 @@ class ChangePasswordSerializer(serializers.Serializer):
     class Meta:
         model = User
         fields = ('username', 'email','password')   '''
-
 #---------------------------------------------------------------------------------------------------------------
 '''class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(max_length=128,min_length=8,write_only=True)
