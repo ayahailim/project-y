@@ -52,7 +52,7 @@ INSTALLED_APPS = [
     'feedback',
     'rest_framework',
     'knox',
-    #'todolist',
+    'todolist',
 
     
 ]
