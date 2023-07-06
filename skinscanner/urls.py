@@ -25,6 +25,7 @@ urlpatterns = [
     path('', include('listoflist.urls')),
     path('', include('ml.urls')),
     path('', include('feedback.urls')),
+    #path('', include('todolist.urls')),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL,
