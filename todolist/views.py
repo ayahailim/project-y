@@ -7,6 +7,7 @@ from .models import Task
 from .serializers import TaskSerializer
 from django.db.models import Q
 from rest_framework.response import Response
+from rest_framework.renderers import JSONRenderer
 '''class TaskList(generics.ListCreateAPIView):
     serializer_class = TaskSerializer
     authentication_classes = [TokenAuthentication]
@@ -40,6 +41,7 @@ class TaskList(generics.ListCreateAPIView):
     permission_classes = (IsAuthenticated,)
 
 class TaskDetail(generics.RetrieveUpdateDestroyAPIView):
+    renderer_classes = [JSONRenderer]
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
     authentication_classes=[TokenAuthentication]
