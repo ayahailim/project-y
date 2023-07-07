@@ -48,8 +48,6 @@ from PIL import Image
         else:
             return Response({'error': 'No image file provided.'}, status=400) '''
 
-             
-
 class classAPIView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = (IsAuthenticated,)
@@ -84,6 +82,19 @@ class classAPIView(APIView):
                 return Response({'Disease': prediction_label}, status=200)
         else:
             return Response({'error': 'No image file provided.'}, status=400) 
+    
+    def delete(self, request, id, format=None):
+        user = request.user
+        try:
+            preuser_object = preuser.objects.get(id=id, user=user)
+        except preuser.DoesNotExist:
+            return Response({'error': 'Object not found.'}, status=404)
+        preuser_object.delete()
+        return Response({'success': 'Object deleted.'}, status=200)
+
+
+
+
 
 import tensorflow as tf
 from tensorflow.keras.preprocessing.image import load_img, img_to_array
