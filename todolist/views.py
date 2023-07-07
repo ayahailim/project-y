@@ -46,7 +46,5 @@ class TaskDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (IsAuthenticated,)
 
     def perform_destroy(self, instance):
-        message = f"Task {instance.id} deleted successfully."
-        # Replace this with your code to send the message
-        print(message)
         instance.delete()
+        return Response({'success': 'Object deleted.'}, status=200)
