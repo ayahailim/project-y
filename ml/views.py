@@ -52,12 +52,26 @@ class classAPIView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = (IsAuthenticated,)
 
-    def get(self, request, format=None):
+    '''def get(self, request, format=None):
         user = request.user
         preuser_objects = preuser.objects.filter(user=user)
         serializer = preuserSerializer(preuser_objects, many=True)
-        return Response(serializer.data)
+        return Response(serializer.data)'''
     
+    def get(self, request, id=None, format=None):
+        user = request.user
+        if id is not None:
+            try:
+                preuser_object = preuser.objects.get(id=id, user=user)
+            except preuser.DoesNotExist:
+                return Response({'error': 'Object not found.'}, status=404)
+            serializer = preuserSerializer(preuser_object)
+            return Response(serializer.data)
+        else:
+            preuser_objects = preuser.objects.filter(user=user)
+            serializer = preuserSerializer(preuser_objects, many=True)
+            return Response(serializer.data)
+        
     def post(self,request,format=None):
         classes = ['Basal Cell Carcinoma (BCC)','Melanocytic Nevi (NV)','Melanoma','chicken Pox','Ringworm','Warts Molluscum,Viral Infections','normal']
         image_file = request.FILES.get('image')
@@ -91,7 +105,7 @@ class classAPIView(APIView):
             return Response({'error': 'Object not found.'}, status=404)
         preuser_object.delete()
         return Response({'success': 'Object deleted.'}, status=200)
-
+    
 
 
 
