@@ -49,4 +49,6 @@ class TaskDetail(generics.RetrieveUpdateDestroyAPIView):
 
     def perform_destroy(self, instance):
         instance.delete()
-        return Response({'success': 'Object deleted.'}, status=200)
+        response = Response({'success': 'Object deleted.'}, status=200)
+        response['Cache-Control'] = 'no-cache'
+        return response
