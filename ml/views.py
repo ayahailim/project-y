@@ -22,6 +22,7 @@ from rest_framework.permissions import IsAuthenticated
 from django.core.files.uploadedfile import SimpleUploadedFile
 import io
 from PIL import Image
+from keras.preprocessing.image import load_img, img_to_array
 
 '''class classifierAPIView(APIView):
     def post(self,request):
@@ -149,6 +150,75 @@ class classAPIViewtf(APIView):
                 output_data = interpreter.get_tensor(output_details[0]['index'])
                 # Post-process the output data
                 prediction_label = classes[np.argmax(output_data)]
+                preuser.objects.create(user=user,image=image_file, prediction=prediction_label)
+                return Response({'Disease': prediction_label}, status=200)
+        else:
+            return Response({'error': 'No image file provided.'}, status=400)
+
+
+'''test_image = load_img('D:/aya1/photos/22.jpg', target_size=(224, 224))
+test_image = image.img_to_array(test_image) / 255  # < - division by 255
+test_image = np.expand_dims(test_image, axis=0)
+test_model = keras.models.load_model('C:/Users/Ninja/Downloads/model (1).tflite',compile=False)
+prediction = test_model.predict(test_image)
+
+classes = ['not_skin','skin']
+classes2 = ['Basal Cell Carcinoma (BCC)','Chickenpox','Melanocytic Nevi (NV)','Melanoma','Normal','Ringworm', 'Warts Molluscum,Viral Infections']
+pred = classes[(np.argmax(prediction))]
+if pred == 'not_skin' :
+    print(pred)
+else:
+    test_model2 = keras.models.load_model('C:/Users/Ninja/Downloads/model(2).tflite',compile=False)
+    prediction2 = test_model2.predict(test_image)
+    test1= np.max(prediction2)
+    if test1 < 0.90:
+      print('other diseases')
+    else:
+      print(classes2[(np.argmax(prediction2))])'''
+
+class twomodels(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request, format=None):
+        user = request.user
+        preuser_objects = preuser.objects.filter(user=user)
+        serializer = preuserSerializer(preuser_objects, many=True)
+        return Response(serializer.data)
+    
+    def post(self,request,format=None):
+        classes = ['not_skin','skin']
+        classes2 = ['Basal Cell Carcinoma (BCC)','Chickenpox','Melanocytic Nevi (NV)','Melanoma','Normal','Ringworm', 'Warts Molluscum,Viral Infections']
+        image_file = request.FILES.get('image')
+        user = request.user
+        if image_file:
+            with tempfile.NamedTemporaryFile(delete=False) as temp_file:
+                temp_file.write(image_file.read())
+                temp_file.flush()
+                # Load the first pre-trained model
+                model1 = tf.keras.models.load_model('./ml/model2.tflite')
+                # Load the second pre-trained model
+                model2 = tf.keras.models.load_model('./ml/tflite_model.tflite')
+                # Load the image and preprocess it
+                test_image = load_img(temp_file.name, target_size=(224, 224))
+                test_image = img_to_array(test_image) / 255
+                test_image = np.expand_dims(test_image, axis=0)
+                # Use the first model to predict the class of the input image
+                prediction = model1.predict(test_image)
+                # Find the index of the maximum predicted probability
+                pred = classes[np.argmax(prediction)]
+                if pred == 'not_skin':
+                    prediction_label = pred
+                else:
+                    # Use the second model to predict the class of the input image
+                    prediction2 = model2.predict(test_image)
+                    # Find the index of the maximum predicted probability from the second model
+                    pred2 = classes2[np.argmax(prediction2)]
+                    # Check if the maximum predicted probability is less than 0.90
+                    if np.max(prediction2) < 0.90:
+                        prediction_label = 'other diseases'
+                    else:
+                        prediction_label = pred2
                 preuser.objects.create(user=user,image=image_file, prediction=prediction_label)
                 return Response({'Disease': prediction_label}, status=200)
         else:
