@@ -26,59 +26,8 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 import io
 from PIL import Image
 from keras.applications.densenet import preprocess_input
-
-class classAPIView(APIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = (IsAuthenticated,)
-
-    def get(self, request, id=None, format=None):
-        user = request.user
-        if id is not None:
-            try:
-                preuser_object = preuser.objects.get(id=id, user=user)
-            except preuser.DoesNotExist:
-                return Response({'error': 'Object not found.'}, status=404)
-            serializer = preuserSerializer(preuser_object)
-            return Response(serializer.data)
-        else:
-            preuser_objects = preuser.objects.filter(user=user)
-            serializer = preuserSerializer(preuser_objects, many=True)
-            return Response(serializer.data)
-        
-    def post(self,request,format=None):
-        classes = ['Basal Cell Carcinoma (BCC)','Melanocytic Nevi (NV)','Melanoma','chicken Pox','Ringworm','Warts Molluscum,Viral Infections','normal']
-        image_file = request.FILES.get('image')
-        user = request.user
-        if image_file:
-            with tempfile.NamedTemporaryFile(delete=False) as temp_file:
-                temp_file.write(image_file.read())
-                temp_file.flush()
-                temp_model = load_model('./ml/7skin_model.h5')
-                test_image = load_img(temp_file.name, target_size=(224, 224))
-                test_image = img_to_array(test_image) / 255
-                test_image = np.expand_dims(test_image, axis=0)
-                prediction = temp_model.predict(test_image)
-                max_pred = np.max(prediction)
-                t = 0.90
-                if max_pred < t:
-                    prediction_label = "unkown"
-                else:
-                    prediction_label = classes[np.argmax(prediction)]
-                
-                preuser.objects.create(user=user,image=image_file, prediction=prediction_label)
-                return Response({'Disease': prediction_label}, status=200)
-        else:
-            return Response({'error': 'No image file provided.'}, status=400) 
-    
-    def delete(self, request, id, format=None):
-        user = request.user
-        try:
-            preuser_object = preuser.objects.get(id=id, user=user)
-        except preuser.DoesNotExist:
-            return Response({'error': 'Object not found.'}, status=404)
-        preuser_object.delete()
-        return Response({'success': 'Object deleted.'}, status=200)
 #===========================================================================================================================   
+
 class classAPIViewtf(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = (IsAuthenticated,)
@@ -178,7 +127,6 @@ class classAPIViewtf(APIView):
         else:
             return Response({'error': 'No image file provided.'}, status=400)'''
 
-
 '''test_image = load_img('D:/aya1/photos/22.jpg', target_size=(224, 224))
 test_image = image.img_to_array(test_image) / 255  # < - division by 255
 test_image = np.expand_dims(test_image, axis=0)
@@ -277,3 +225,55 @@ else:
                 return Response({'Disease': prediction_label}, status=200)
         else:
             return Response({'error': 'No image file provided.'}, status=400) '''
+
+'''class classAPIView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request, id=None, format=None):
+        user = request.user
+        if id is not None:
+            try:
+                preuser_object = preuser.objects.get(id=id, user=user)
+            except preuser.DoesNotExist:
+                return Response({'error': 'Object not found.'}, status=404)
+            serializer = preuserSerializer(preuser_object)
+            return Response(serializer.data)
+        else:
+            preuser_objects = preuser.objects.filter(user=user)
+            serializer = preuserSerializer(preuser_objects, many=True)
+            return Response(serializer.data)
+        
+    def post(self,request,format=None):
+        classes = ['Basal Cell Carcinoma (BCC)','Melanocytic Nevi (NV)','Melanoma','chicken Pox','Ringworm','Warts Molluscum,Viral Infections','normal']
+        image_file = request.FILES.get('image')
+        user = request.user
+        if image_file:
+            with tempfile.NamedTemporaryFile(delete=False) as temp_file:
+                temp_file.write(image_file.read())
+                temp_file.flush()
+                temp_model = load_model('./ml/7skin_model.h5')
+                test_image = load_img(temp_file.name, target_size=(224, 224))
+                test_image = img_to_array(test_image) / 255
+                test_image = np.expand_dims(test_image, axis=0)
+                prediction = temp_model.predict(test_image)
+                max_pred = np.max(prediction)
+                t = 0.90
+                if max_pred < t:
+                    prediction_label = "unkown"
+                else:
+                    prediction_label = classes[np.argmax(prediction)]
+                
+                preuser.objects.create(user=user,image=image_file, prediction=prediction_label)
+                return Response({'Disease': prediction_label}, status=200)
+        else:
+            return Response({'error': 'No image file provided.'}, status=400) 
+    
+    def delete(self, request, id, format=None):
+        user = request.user
+        try:
+            preuser_object = preuser.objects.get(id=id, user=user)
+        except preuser.DoesNotExist:
+            return Response({'error': 'Object not found.'}, status=404)
+        preuser_object.delete()
+        return Response({'success': 'Object deleted.'}, status=200)'''
