@@ -22,7 +22,7 @@ from rest_framework.permissions import IsAuthenticated
 from django.core.files.uploadedfile import SimpleUploadedFile
 import io
 from PIL import Image
-from keras.preprocessing.image import load_img, img_to_array
+
 
 '''class classifierAPIView(APIView):
     def post(self,request):
