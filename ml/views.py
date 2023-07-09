@@ -5,20 +5,14 @@ import numpy as np
 import keras
 import tensorflow as tf
 from tensorflow.keras.preprocessing.image import load_img, img_to_array
-import numpy as np
 import tensorflow
-from keras.models import Sequential
 from keras.utils import img_to_array
 import keras.utils
 from keras.utils import load_img
-from keras.models import Sequential, load_model
 from .models import preuser
 from .serializers import preuserSerializer
-from rest_framework import generics
-from rest_framework.authentication import BasicAuthentication
 from knox.auth import TokenAuthentication
 from rest_framework.response import Response
-from rest_framework import status
 from rest_framework.views import APIView
 import tempfile
 from rest_framework.permissions import IsAuthenticated
@@ -27,37 +21,6 @@ import io
 from PIL import Image
 from keras.applications.densenet import preprocess_input
 #===========================================================================================================================   
-'''def post(self,request,format=None):
-        classes =['Basal Cell Carcinoma (BCC)', 'Chickenpox', 'Melanocytic Nevi (NV)', 'Melanoma', 'Normal', 'Ringworm', 'Warts Molluscum,Viral Infections']
-        image_file = request.FILES.get('image')
-        user = request.user
-        if image_file:
-            with tempfile.NamedTemporaryFile(delete=False) as temp_file:
-                temp_file.write(image_file.read())
-                temp_file.flush()
-                # Load the TFLite model
-                interpreter = tf.lite.Interpreter(model_path='./ml/final_model.tflite')
-                interpreter.allocate_tensors()
-                # Load the image and preprocess
-                test_image = load_img(temp_file.name,target_size=(224, 224))
-                test_image = img_to_array(test_image) 
-                test_image = np.expand_dims(test_image, axis=0)
-                test_image = preprocess_input(test_image)
-                #prediction = test_model.predict(test_image)
-                # Set the input tensor to the interpreter
-                input_details = interpreter.get_input_details()
-                interpreter.set_tensor(input_details[0]['index'], test_image)
-                # Invoke the interpreter to obtain the predictions
-                interpreter.invoke()
-                # Get the output tensor from the interpreter
-                output_details = interpreter.get_output_details()
-                output_data = interpreter.get_tensor(output_details[0]['index'])
-                # Post-process the output data
-                prediction_label = classes[np.argmax(output_data)]
-                preuser.objects.create(user=user,image=image_file, prediction=prediction_label)
-                return Response({'Disease': prediction_label}, status=200)
-        else:
-            return Response({'error': 'No image file provided.'}, status=400)'''
 class classAPIViewtf(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = (IsAuthenticated,)
@@ -160,6 +123,7 @@ class classAPIViewtf(APIView):
                 return Response({'Disease': prediction_label}, status=200)
         else:
             return Response({'error': 'No image file provided.'}, status=400)'''
+
 
 '''test_image = load_img('D:/aya1/photos/22.jpg', target_size=(224, 224))
 test_image = image.img_to_array(test_image) / 255  # < - division by 255
