@@ -10,6 +10,7 @@ from rest_framework.response import Response
 from rest_framework.renderers import JSONRenderer
 
 class TaskList(generics.ListCreateAPIView):
+    queryset = Task.objects.all()
     serializer_class = TaskSerializer
     authentication_classes = [TokenAuthentication]
     permission_classes = (IsAuthenticated,)

@@ -40,7 +40,8 @@ class classAPIViewtf(APIView):
             return Response(serializer.data)
        
     def post(self,request,format=None):
-        classes =['Basal Cell Carcinoma (BCC)', 'Chickenpox', 'Melanocytic Nevi (NV)', 'Melanoma', 'Normal', 'Ringworm', 'Warts Molluscum,Viral Infections']
+        classes =['Basal Cell Carcinoma (BCC)', 'Chickenpox', 'Melanocytic Nevi (NV)', 'Melanoma',
+                   'Normal', 'Ringworm', 'Warts Molluscum,Viral Infections']
         image_file = request.FILES.get('image')
         user = request.user
         if image_file:
