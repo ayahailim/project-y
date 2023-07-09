@@ -38,6 +38,10 @@ class TaskList(generics.ListCreateAPIView):
             queryset = queryset.filter(title__icontains=self.request.query_params.get('title'))
         return queryset
     
+    def perform_create(self, serializer):
+        user = self.request.user
+        serializer.save(user=user)
+        
 class TaskDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
