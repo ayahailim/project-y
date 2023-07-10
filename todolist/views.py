@@ -47,7 +47,12 @@ class TaskDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = TaskSerializer
     authentication_classes = [TokenAuthentication]
     permission_classes = (IsAuthenticated,)
-
+    
+    def perform_destroy(self, instance):
+            instance.delete()
+            response = Response({'success': 'Object deleted.'}, status=200)
+            response['Cache-Control'] = 'no-cache'
+            return response
 
 '''class TaskList(generics.ListCreateAPIView):
     queryset = Task.objects.all()
@@ -62,8 +67,4 @@ class TaskDetail(generics.RetrieveUpdateDestroyAPIView):
     authentication_classes=[TokenAuthentication]
     permission_classes = (IsAuthenticated,)
 
-    def perform_destroy(self, instance):
-        instance.delete()
-        response = Response({'success': 'Object deleted.'}, status=200)
-        response['Cache-Control'] = 'no-cache'
-        return response'''
+    '''
